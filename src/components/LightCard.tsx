@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { HassEntity } from 'home-assistant-js-websocket';
-import { useState } from 'react';
-import { controlLight } from '@/lib/homeassistant';
+import { HassEntity } from "home-assistant-js-websocket";
+import { useState, useRef, useEffect } from "react";
+import { controlLight } from "@/lib/homeassistant";
 import {
   supportsBrightness,
   supportsColorTemp,
   getCurrentBrightness,
   getCurrentColorTemp,
   getColorTempRange,
-} from '@/lib/lightCapabilities';
+} from "@/lib/lightCapabilities";
 
 interface LightCardProps {
   entityId: string;
@@ -17,8 +17,12 @@ interface LightCardProps {
   isGroup?: boolean;
 }
 
-export default function LightCard({ entityId, entity, isGroup = false }: LightCardProps) {
-  const isOn = entity.state === 'on';
+export default function LightCard({
+  entityId,
+  entity,
+  isGroup = false,
+}: LightCardProps) {
+  const isOn = entity.state === "on";
   const hasBrightness = supportsBrightness(entity);
   const hasColorTemp = supportsColorTemp(entity);
 
@@ -26,39 +30,71 @@ export default function LightCard({ entityId, entity, isGroup = false }: LightCa
   const [colorTemp, setColorTemp] = useState(getCurrentColorTemp(entity));
   const colorTempRange = getColorTempRange(entity);
 
+  // Refs to track pending updates
+  const brightnessTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const colorTempTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (brightnessTimeoutRef.current)
+        clearTimeout(brightnessTimeoutRef.current);
+      if (colorTempTimeoutRef.current)
+        clearTimeout(colorTempTimeoutRef.current);
+    };
+  }, []);
+
   const handleToggle = async () => {
     try {
-      await controlLight(entityId, isOn ? 'turn_off' : 'turn_on');
+      await controlLight(entityId, isOn ? "turn_off" : "turn_on");
     } catch (error) {
-      console.error('Failed to toggle light:', error);
+      console.error("Failed to toggle light:", error);
     }
   };
 
-  const handleBrightnessChange = async (value: number) => {
+  const handleBrightnessChange = (value: number) => {
     setBrightness(value);
-    if (isOn) {
-      try {
-        // Convert 0-100 to 0-255 for HA
-        await controlLight(entityId, 'turn_on', {
-          brightness: Math.round((value / 100) * 255),
-        });
-      } catch (error) {
-        console.error('Failed to set brightness:', error);
-      }
+
+    // Clear any pending timeout
+    if (brightnessTimeoutRef.current) {
+      clearTimeout(brightnessTimeoutRef.current);
     }
+
+    // Set new timeout to update after user stops dragging
+    brightnessTimeoutRef.current = setTimeout(async () => {
+      if (isOn) {
+        try {
+          // Convert 0-100 to 0-255 for HA
+          await controlLight(entityId, "turn_on", {
+            brightness: Math.round((value / 100) * 255),
+          });
+        } catch (error) {
+          console.error("Failed to set brightness:", error);
+        }
+      }
+    }, 300); // Wait 300ms after user stops dragging
   };
 
-  const handleColorTempChange = async (value: number) => {
+  const handleColorTempChange = (value: number) => {
     setColorTemp(value);
-    if (isOn) {
-      try {
-        await controlLight(entityId, 'turn_on', {
-          color_temp_kelvin: value,
-        });
-      } catch (error) {
-        console.error('Failed to set color temperature:', error);
-      }
+
+    // Clear any pending timeout
+    if (colorTempTimeoutRef.current) {
+      clearTimeout(colorTempTimeoutRef.current);
     }
+
+    // Set new timeout to update after user stops dragging
+    colorTempTimeoutRef.current = setTimeout(async () => {
+      if (isOn) {
+        try {
+          await controlLight(entityId, "turn_on", {
+            color_temp_kelvin: value,
+          });
+        } catch (error) {
+          console.error("Failed to set color temperature:", error);
+        }
+      }
+    }, 300); // Wait 300ms after user stops dragging
   };
 
   return (
@@ -80,12 +116,12 @@ export default function LightCard({ entityId, entity, isGroup = false }: LightCa
         <button
           onClick={handleToggle}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            isOn ? 'bg-blue-600' : 'bg-gray-600'
+            isOn ? "bg-blue-600" : "bg-gray-600"
           }`}
         >
           <span
             className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-              isOn ? 'translate-x-6' : 'translate-x-1'
+              isOn ? "translate-x-6" : "translate-x-1"
             }`}
           />
         </button>

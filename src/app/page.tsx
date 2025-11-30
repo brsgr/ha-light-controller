@@ -7,7 +7,6 @@ export default function Home() {
   const { lights, isConnected, error } = useHomeAssistant();
 
   const lightEntries = Object.entries(lights);
-  console.log(lightEntries);
   const individualLights = lightEntries.filter(
     ([_, entity]) => !entity.attributes.entity_id,
   );
