@@ -130,15 +130,15 @@ export default function LightCard({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+    <div className="bg-white rounded-xl p-6 border border-neutral-200 hover:shadow-lg transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-base font-semibold text-neutral-900">
             {entity.attributes.friendly_name || entityId}
           </h3>
           {isGroup && entity.attributes.entity_id && (
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-neutral-500 mt-1">
               {entity.attributes.entity_id.length} lights
             </p>
           )}
@@ -148,7 +148,7 @@ export default function LightCard({
         <button
           onClick={handleToggle}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            isOn ? "bg-blue-600" : "bg-gray-600"
+            isOn ? "bg-neutral-900" : "bg-neutral-300"
           }`}
         >
           <span
@@ -160,16 +160,26 @@ export default function LightCard({
       </div>
 
       {/* State */}
-      <div className="text-sm text-gray-400 mb-4">
-        State: <span className="text-white">{entity.state}</span>
+      <div className="text-sm text-neutral-500 mb-4">
+        <span
+          className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+            isOn
+              ? "bg-green-100 text-green-700"
+              : "bg-neutral-100 text-neutral-600"
+          }`}
+        >
+          {entity.state}
+        </span>
       </div>
 
       {/* Brightness Slider */}
       {hasBrightness && (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm text-gray-400">Brightness</label>
-            <span className="text-sm text-white">{brightness}%</span>
+            <label className="text-sm font-medium text-neutral-700">
+              Brightness
+            </label>
+            <span className="text-sm text-neutral-900">{brightness}%</span>
           </div>
           <input
             type="range"
@@ -178,7 +188,7 @@ export default function LightCard({
             value={brightness}
             onChange={(e) => handleBrightnessChange(parseInt(e.target.value))}
             disabled={!isOn}
-            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed slider"
+            className="w-full h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed slider"
           />
         </div>
       )}
@@ -187,8 +197,10 @@ export default function LightCard({
       {hasColorTemp && (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm text-gray-400">Color Temp</label>
-            <span className="text-sm text-white">{colorTemp}K</span>
+            <label className="text-sm font-medium text-neutral-700">
+              Color Temp
+            </label>
+            <span className="text-sm text-neutral-900">{colorTemp}K</span>
           </div>
           <input
             type="range"
@@ -197,9 +209,9 @@ export default function LightCard({
             value={colorTemp}
             onChange={(e) => handleColorTempChange(parseInt(e.target.value))}
             disabled={!isOn}
-            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed slider"
+            className="w-full h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed slider"
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="flex justify-between text-xs text-neutral-500 mt-1">
             <span>Warm ({colorTempRange.min}K)</span>
             <span>Cool ({colorTempRange.max}K)</span>
           </div>
@@ -210,8 +222,12 @@ export default function LightCard({
       {hasRgbColor && (
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm text-gray-400">RGB Color</label>
-            <span className="text-sm text-white">{rgbColor.toUpperCase()}</span>
+            <label className="text-sm font-medium text-neutral-700">
+              RGB Color
+            </label>
+            <span className="text-sm text-neutral-900">
+              {rgbColor.toUpperCase()}
+            </span>
           </div>
           <div className="flex items-center gap-3">
             <input
@@ -219,7 +235,7 @@ export default function LightCard({
               value={rgbColor}
               onChange={(e) => handleRgbColorChange(e.target.value)}
               disabled={!isOn}
-              className="w-full h-10 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-10 bg-neutral-100 border border-neutral-300 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
         </div>
