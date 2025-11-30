@@ -1,11 +1,13 @@
 "use client";
 
 import { useHomeAssistant } from "@/lib/useHomeAssistant";
+import LightCard from "@/components/LightCard";
 
 export default function Home() {
   const { lights, isConnected, error } = useHomeAssistant();
 
   const lightEntries = Object.entries(lights);
+  console.log(lightEntries);
   const individualLights = lightEntries.filter(
     ([_, entity]) => !entity.attributes.entity_id,
   );
@@ -47,38 +49,7 @@ export default function Home() {
           <h2 className="text-xl font-semibold mb-3">Individual Lights</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {individualLights.map(([id, entity]) => (
-              <div
-                key={id}
-                className="bg-gray-800 rounded-lg p-6 border border-gray-700"
-              >
-                <h3 className="text-lg font-semibold mb-2">
-                  {entity.attributes.friendly_name || id}
-                </h3>
-                <div className="space-y-1 text-sm text-gray-400">
-                  <p>
-                    State: <span className="text-white">{entity.state}</span>
-                  </p>
-                  {entity.attributes.brightness && (
-                    <p>
-                      Brightness:{" "}
-                      <span className="text-white">
-                        {Math.round(entity.attributes.brightness / 2.55)}%
-                      </span>
-                    </p>
-                  )}
-                  {(entity.attributes.color_temp_kelvin ||
-                    entity.attributes.color_temp) && (
-                    <p>
-                      Color Temp:{" "}
-                      <span className="text-white">
-                        {entity.attributes.color_temp_kelvin ||
-                          entity.attributes.color_temp}
-                        K
-                      </span>
-                    </p>
-                  )}
-                </div>
-              </div>
+              <LightCard key={id} entityId={id} entity={entity} />
             ))}
           </div>
         </div>
@@ -90,32 +61,7 @@ export default function Home() {
           <h2 className="text-xl font-semibold mb-3">Light Groups</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {lightGroups.map(([id, entity]) => (
-              <div
-                key={id}
-                className="bg-gray-800 rounded-lg p-6 border border-gray-700"
-              >
-                <h3 className="text-lg font-semibold mb-2">
-                  {entity.attributes.friendly_name || id}
-                </h3>
-                <div className="space-y-1 text-sm text-gray-400">
-                  <p>
-                    State: <span className="text-white">{entity.state}</span>
-                  </p>
-                  <p>
-                    Lights:{" "}
-                    <span className="text-white">
-                      {entity.attributes.entity_id?.length || 0}
-                    </span>
-                  </p>
-                  <div className="mt-2 text-xs">
-                    {entity.attributes.entity_id?.map((lightId: string) => (
-                      <div key={lightId} className="text-gray-500">
-                        {lightId}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <LightCard key={id} entityId={id} entity={entity} isGroup />
             ))}
           </div>
         </div>
