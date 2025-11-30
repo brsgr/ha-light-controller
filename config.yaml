@@ -12,15 +12,16 @@ arch:
 init: false
 hassio_api: true
 homeassistant_api: true
-auth_api: true
-ingress: true
+auth_api: false
+ingress: false
 panel_icon: mdi:lightbulb-group
+webui: "[PROTO:http]://[HOST]:[PORT:3000]"
 ports:
   3000/tcp: 3000
 ports_description:
   3000/tcp: Web interface
 options:
-  ha_url: "ws://supervisor/core/websocket"
+  ha_url: "ws://homeassistant.local:8123"
   ha_token: ""
 schema:
   ha_url: str

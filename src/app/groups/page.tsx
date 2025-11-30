@@ -60,7 +60,8 @@ export default function GroupsPage() {
           Home Assistant manages groups through the Helpers interface.
         </p>
         <p className="text-sm text-neutral-600">
-          To create or modify groups, click "Create in HA" above or visit{" "}
+          To create or modify groups, click &quot;Create in HA&quot; above or
+          visit{" "}
           <span className="font-mono text-neutral-900 bg-white px-1.5 py-0.5 rounded border border-neutral-200">
             Settings → Devices & Services → Helpers
           </span>{" "}

@@ -177,8 +177,8 @@ export default function PresetsPage() {
             No scenes yet
           </h3>
           <p className="text-neutral-500 mb-4">
-            Create your first scene by setting up your lights and clicking "Save
-            Current State"
+            Create your first scene by setting up your lights and clicking
+            &quot;Save Current State&quot;
           </p>
         </div>
       )}
@@ -187,8 +187,8 @@ export default function PresetsPage() {
       <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-200">
         <h3 className="font-medium text-neutral-900 mb-2">About Presets</h3>
         <p className="text-sm text-neutral-600">
-          Presets use Home Assistant's scene system. When you save a scene, it
-          captures the current state of all your lights (brightness, color
+          Presets use Home Assistant&apos;s scene system. When you save a scene,
+          it captures the current state of all your lights (brightness, color
           temperature, on/off) and stores it in Home Assistant. Click any scene
           card to activate it instantly.
         </p>
