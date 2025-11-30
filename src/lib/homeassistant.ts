@@ -49,7 +49,11 @@ export async function subscribeToLights(
 export async function controlLight(
   entityId: string,
   action: "turn_on" | "turn_off",
-  data?: { brightness?: number; color_temp_kelvin?: number },
+  data?: {
+    brightness?: number;
+    color_temp_kelvin?: number;
+    rgb_color?: [number, number, number];
+  },
 ) {
   const conn = await getConnection();
   return callService(conn, "light", action, {

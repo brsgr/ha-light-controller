@@ -9,6 +9,10 @@ import {
   getCurrentBrightness,
   getCurrentColorTemp,
   getColorTempRange,
+  supportsRgbColor,
+  getCurrentRgbColor,
+  rgbToHex,
+  hexToRgb,
 } from "@/lib/lightCapabilities";
 
 interface LightCardProps {
@@ -25,14 +29,19 @@ export default function LightCard({
   const isOn = entity.state === "on";
   const hasBrightness = supportsBrightness(entity);
   const hasColorTemp = supportsColorTemp(entity);
+  const hasRgbColor = supportsRgbColor(entity);
 
   const [brightness, setBrightness] = useState(getCurrentBrightness(entity));
   const [colorTemp, setColorTemp] = useState(getCurrentColorTemp(entity));
+  const [rgbColor, setRgbColor] = useState(
+    rgbToHex(getCurrentRgbColor(entity)),
+  );
   const colorTempRange = getColorTempRange(entity);
 
   // Refs to track pending updates
   const brightnessTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const colorTempTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const rgbColorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -41,6 +50,7 @@ export default function LightCard({
         clearTimeout(brightnessTimeoutRef.current);
       if (colorTempTimeoutRef.current)
         clearTimeout(colorTempTimeoutRef.current);
+      if (rgbColorTimeoutRef.current) clearTimeout(rgbColorTimeoutRef.current);
     };
   }, []);
 
@@ -95,6 +105,28 @@ export default function LightCard({
         }
       }
     }, 300); // Wait 300ms after user stops dragging
+  };
+
+  const handleRgbColorChange = (hexColor: string) => {
+    setRgbColor(hexColor);
+
+    // Clear any pending timeout
+    if (rgbColorTimeoutRef.current) {
+      clearTimeout(rgbColorTimeoutRef.current);
+    }
+
+    // Set new timeout to update after user stops selecting color
+    rgbColorTimeoutRef.current = setTimeout(async () => {
+      if (isOn) {
+        try {
+          await controlLight(entityId, "turn_on", {
+            rgb_color: hexToRgb(hexColor),
+          });
+        } catch (error) {
+          console.error("Failed to set RGB color:", error);
+        }
+      }
+    }, 300); // Wait 300ms after user stops selecting
   };
 
   return (
@@ -153,7 +185,7 @@ export default function LightCard({
 
       {/* Color Temperature Slider */}
       {hasColorTemp && (
-        <div>
+        <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
             <label className="text-sm text-gray-400">Color Temp</label>
             <span className="text-sm text-white">{colorTemp}K</span>
@@ -170,6 +202,25 @@ export default function LightCard({
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>Warm ({colorTempRange.min}K)</span>
             <span>Cool ({colorTempRange.max}K)</span>
+          </div>
+        </div>
+      )}
+
+      {/* RGB Color Picker */}
+      {hasRgbColor && (
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-sm text-gray-400">RGB Color</label>
+            <span className="text-sm text-white">{rgbColor.toUpperCase()}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              value={rgbColor}
+              onChange={(e) => handleRgbColorChange(e.target.value)}
+              disabled={!isOn}
+              className="w-full h-10 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            />
           </div>
         </div>
       )}

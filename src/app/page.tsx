@@ -2,6 +2,7 @@
 
 import { useHomeAssistant } from "@/lib/useHomeAssistant";
 import LightCard from "@/components/LightCard";
+import { supportsRgbColor } from "@/lib/lightCapabilities";
 
 export default function Home() {
   const { lights, isConnected, error } = useHomeAssistant();
@@ -14,6 +15,16 @@ export default function Home() {
     ([_, entity]) =>
       entity.attributes.entity_id && Array.isArray(entity.attributes.entity_id),
   );
+
+  // Helper to check if all lights in a group support RGB
+  const groupSupportsRgb = (groupEntity: any) => {
+    if (!groupEntity.attributes.entity_id) return false;
+    const memberLights = groupEntity.attributes.entity_id as string[];
+    return memberLights.every((lightId) => {
+      const light = lights[lightId];
+      return light && supportsRgbColor(light);
+    });
+  };
 
   return (
     <div className="space-y-6">

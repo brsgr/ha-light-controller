@@ -85,3 +85,61 @@ export function getColorTempRange(entity: HassEntity): {
 
   return defaultRange;
 }
+
+export function supportsRgbColor(entity: HassEntity): boolean {
+  // Modern approach: check supported_color_modes
+  if (entity.attributes.supported_color_modes) {
+    const modes = entity.attributes.supported_color_modes as string[];
+    // RGB is supported if the light has any RGB-capable mode
+    return modes.some((mode) =>
+      [
+        COLOR_MODE_RGB,
+        COLOR_MODE_RGBW,
+        COLOR_MODE_RGBWW,
+        COLOR_MODE_HS,
+        COLOR_MODE_XY,
+      ].includes(mode),
+    );
+  }
+
+  // Fallback: check for SUPPORT_COLOR flag (16)
+  const features = entity.attributes.supported_features || 0;
+  return (features & 16) !== 0;
+}
+
+export function getCurrentRgbColor(
+  entity: HassEntity,
+): [number, number, number] {
+  // Return current RGB color, default to white if not set
+  if (
+    entity.attributes.rgb_color &&
+    Array.isArray(entity.attributes.rgb_color)
+  ) {
+    return entity.attributes.rgb_color as [number, number, number];
+  }
+  return [255, 255, 255]; // Default to white
+}
+
+export function rgbToHex(rgb: [number, number, number]): string {
+  const [r, g, b] = rgb;
+  return (
+    "#" +
+    [r, g, b]
+      .map((x) => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      })
+      .join("")
+  );
+}
+
+export function hexToRgb(hex: string): [number, number, number] {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16),
+      ]
+    : [255, 255, 255];
+}
