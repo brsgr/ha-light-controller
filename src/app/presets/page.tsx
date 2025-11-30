@@ -61,18 +61,20 @@ export default function PresetsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Presets</h1>
-          <p className="text-gray-400">
+          <h1 className="text-2xl font-semibold text-neutral-900 mb-1">
+            Presets
+          </h1>
+          <p className="text-sm text-neutral-500">
             Quick access light scenes from Home Assistant
           </p>
         </div>
         <button
           onClick={() => setIsCreating(true)}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+          className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg text-sm font-medium transition-colors"
         >
           + Save Current State
         </button>
@@ -81,11 +83,11 @@ export default function PresetsPage() {
       {/* Create Scene Modal */}
       {isCreating && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-            <h2 className="text-xl font-bold mb-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-xl">
+            <h2 className="text-xl font-semibold text-neutral-900 mb-2">
               Save Current State as Scene
             </h2>
-            <p className="text-sm text-gray-400 mb-4">
+            <p className="text-sm text-neutral-500 mb-4">
               This will capture the current state of all lights and save it as a
               new scene in Home Assistant.
             </p>
@@ -94,7 +96,7 @@ export default function PresetsPage() {
               value={newSceneName}
               onChange={(e) => setNewSceneName(e.target.value)}
               placeholder="Scene name (e.g., 'Evening Relax')"
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-white border border-neutral-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-neutral-900 text-neutral-900"
               autoFocus
             />
             <div className="flex gap-3">
@@ -103,14 +105,14 @@ export default function PresetsPage() {
                   setIsCreating(false);
                   setNewSceneName("");
                 }}
-                className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium transition-colors"
+                className="flex-1 px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 rounded-lg font-medium transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateScene}
                 disabled={!newSceneName.trim()}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+                className="flex-1 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
               >
                 Save Scene
               </button>
@@ -121,15 +123,15 @@ export default function PresetsPage() {
 
       {/* Error State */}
       {error && (
-        <div className="bg-red-900/20 border border-red-800 rounded-lg p-4">
-          <p className="text-red-400">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <p className="text-red-700 text-sm">{error}</p>
         </div>
       )}
 
       {/* Loading State */}
       {isLoading && (
-        <div className="bg-gray-800 rounded-lg p-12 border border-gray-700 text-center">
-          <p className="text-gray-400">Loading scenes...</p>
+        <div className="bg-white rounded-xl p-12 border border-neutral-200 text-center">
+          <p className="text-neutral-500">Loading scenes...</p>
         </div>
       )}
 
@@ -139,12 +141,12 @@ export default function PresetsPage() {
           {sceneList.map(([sceneId, scene]) => (
             <div
               key={sceneId}
-              className="bg-gray-800 rounded-lg border border-gray-700 hover:border-blue-500 transition-all relative group"
+              className="bg-white rounded-xl border border-neutral-200 hover:shadow-lg transition-all relative group"
             >
               {/* Delete button */}
               <button
                 onClick={(e) => handleDeleteScene(sceneId, e)}
-                className="absolute top-2 right-2 w-8 h-8 bg-red-600/80 hover:bg-red-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"
+                className="absolute top-2 right-2 w-8 h-8 bg-red-600 hover:bg-red-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10 shadow-sm"
                 title="Delete scene"
               >
                 <span className="text-white text-sm">🗑️</span>
@@ -156,11 +158,11 @@ export default function PresetsPage() {
                 className="w-full p-6 text-left"
               >
                 <div className="text-4xl mb-3">🎨</div>
-                <h3 className="font-semibold mb-1">
+                <h3 className="font-semibold text-neutral-900 mb-1">
                   {scene.attributes.friendly_name ||
                     sceneId.replace("scene.", "")}
                 </h3>
-                <p className="text-xs text-gray-500">Click to activate</p>
+                <p className="text-xs text-neutral-500">Click to activate</p>
               </button>
             </div>
           ))}
@@ -169,10 +171,12 @@ export default function PresetsPage() {
 
       {/* Empty State */}
       {!isLoading && sceneList.length === 0 && !error && (
-        <div className="bg-gray-800 rounded-lg p-12 border border-gray-700 text-center">
+        <div className="bg-white rounded-xl p-12 border border-neutral-200 text-center">
           <div className="text-6xl mb-4">🎨</div>
-          <h3 className="text-xl font-semibold mb-2">No scenes yet</h3>
-          <p className="text-gray-400 mb-4">
+          <h3 className="text-xl font-semibold text-neutral-900 mb-2">
+            No scenes yet
+          </h3>
+          <p className="text-neutral-500 mb-4">
             Create your first scene by setting up your lights and clicking "Save
             Current State"
           </p>
@@ -180,9 +184,9 @@ export default function PresetsPage() {
       )}
 
       {/* Info Section */}
-      <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-        <h3 className="font-medium mb-2">About Presets</h3>
-        <p className="text-sm text-gray-400">
+      <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-200">
+        <h3 className="font-medium text-neutral-900 mb-2">About Presets</h3>
+        <p className="text-sm text-neutral-600">
           Presets use Home Assistant's scene system. When you save a scene, it
           captures the current state of all your lights (brightness, color
           temperature, on/off) and stores it in Home Assistant. Click any scene

@@ -124,7 +124,7 @@ export default function Navigation() {
           {/* Logo/Brand */}
           <div className="flex-shrink-0">
             <Link href="/" className="text-xl font-semibold text-neutral-900">
-              LightLink
+              Light Controller
             </Link>
           </div>
 

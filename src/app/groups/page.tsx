@@ -15,12 +15,14 @@ export default function GroupsPage() {
     process.env.NEXT_PUBLIC_HA_URL || "http://homeassistant.local:8123";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Light Groups</h1>
-          <p className="text-gray-400">
+          <h1 className="text-2xl font-semibold text-neutral-900 mb-1">
+            Light Groups
+          </h1>
+          <p className="text-sm text-neutral-500">
             Control and manage light groups from Home Assistant
           </p>
         </div>
@@ -28,7 +30,7 @@ export default function GroupsPage() {
           href={`${haUrl}/config/helpers`}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+          className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg text-sm font-medium transition-colors"
         >
           + Create in HA
         </a>
@@ -36,28 +38,30 @@ export default function GroupsPage() {
 
       {/* Connection Status */}
       {!isConnected && !error && (
-        <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-          <p className="text-gray-400">Connecting to Home Assistant...</p>
+        <div className="bg-white rounded-xl p-4 border border-neutral-200">
+          <p className="text-neutral-500">Connecting to Home Assistant...</p>
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <div className="bg-red-900/20 border border-red-800 rounded-lg p-4">
-          <p className="text-red-400">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <p className="text-red-700 text-sm">{error}</p>
         </div>
       )}
 
       {/* Info Box */}
-      <div className="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
-        <h3 className="font-medium text-blue-300 mb-2">About Light Groups</h3>
-        <p className="text-sm text-blue-200 mb-3">
+      <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-4">
+        <h3 className="font-medium text-neutral-900 mb-2">
+          About Light Groups
+        </h3>
+        <p className="text-sm text-neutral-600 mb-3">
           Light groups allow you to control multiple lights as a single entity.
           Home Assistant manages groups through the Helpers interface.
         </p>
-        <p className="text-sm text-blue-200">
+        <p className="text-sm text-neutral-600">
           To create or modify groups, click "Create in HA" above or visit{" "}
-          <span className="font-mono text-blue-100">
+          <span className="font-mono text-neutral-900 bg-white px-1.5 py-0.5 rounded border border-neutral-200">
             Settings → Devices & Services → Helpers
           </span>{" "}
           in Home Assistant.
@@ -67,7 +71,7 @@ export default function GroupsPage() {
       {/* Groups Grid */}
       {isConnected && lightGroups.length > 0 && (
         <div>
-          <h2 className="text-xl font-semibold mb-4">
+          <h2 className="text-lg font-semibold text-neutral-900 mb-4">
             Your Light Groups ({lightGroups.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -80,10 +84,12 @@ export default function GroupsPage() {
 
       {/* Empty State */}
       {isConnected && lightGroups.length === 0 && (
-        <div className="bg-gray-800 rounded-lg p-12 border border-gray-700 text-center">
+        <div className="bg-white rounded-xl p-12 border border-neutral-200 text-center">
           <div className="text-6xl mb-4">👥</div>
-          <h3 className="text-xl font-semibold mb-2">No light groups yet</h3>
-          <p className="text-gray-400 mb-4">
+          <h3 className="text-xl font-semibold text-neutral-900 mb-2">
+            No light groups yet
+          </h3>
+          <p className="text-neutral-500 mb-4">
             Create light groups in Home Assistant to control multiple lights
             together
           </p>
@@ -91,7 +97,7 @@ export default function GroupsPage() {
             href={`${haUrl}/config/helpers`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            className="inline-block px-6 py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg font-medium transition-colors"
           >
             Create Light Group in HA
           </a>
