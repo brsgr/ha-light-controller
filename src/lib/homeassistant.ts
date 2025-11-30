@@ -67,3 +67,45 @@ export async function getLightState(
   })) as HassEntity[];
   return states.find((state) => state.entity_id === entityId) || null;
 }
+
+// Scene functions
+export async function subscribeToScenes(
+  callback: (scenes: Record<string, HassEntity>) => void,
+) {
+  const conn = await getConnection();
+
+  return subscribeEntities(conn, (entities: HassEntities) => {
+    // Filter for scene entities
+    const scenes = Object.fromEntries(
+      Object.entries(entities).filter(([id]) => id.startsWith("scene.")),
+    );
+
+    callback(scenes);
+  });
+}
+
+export async function activateScene(sceneId: string) {
+  const conn = await getConnection();
+  return callService(conn, "scene", "turn_on", {
+    entity_id: sceneId,
+  });
+}
+
+export async function createScene(sceneName: string, lightEntityIds: string[]) {
+  const conn = await getConnection();
+
+  // scene.create takes a snapshot of current light states
+  return callService(conn, "scene", "create", {
+    scene_id: sceneName.toLowerCase().replace(/\s+/g, "_"),
+    snapshot_entities: lightEntityIds,
+  });
+}
+
+export async function deleteScene(sceneId: string) {
+  const conn = await getConnection();
+
+  // Use scene.delete service to remove a scene
+  return callService(conn, "scene", "delete", {
+    entity_id: sceneId,
+  });
+}
