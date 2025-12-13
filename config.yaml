@@ -1,8 +1,8 @@
 name: Light Controller
-version: "1.0.0"
+version: "1.0.1"
 slug: light_controller
 description: Modern web interface for controlling Zigbee lights via Home Assistant
-url: https://github.com/brsg/ha-light-controller
+url: https://github.com/brsgr/ha-light-controller
 arch:
   - aarch64
   - amd64
@@ -15,14 +15,15 @@ homeassistant_api: true
 auth_api: false
 ingress: false
 panel_icon: mdi:lightbulb-group
-webui: "[PROTO:http]://[HOST]:[PORT:3000]"
+webui: "http://[HOST]:[PORT:3000]"
 ports:
   3000/tcp: 3000
 ports_description:
   3000/tcp: Web interface
+host_network: false
 options:
-  ha_url: "ws://homeassistant.local:8123"
+  ha_url: "ws://homeassistant.local:8123/api/websocket"
   ha_token: ""
 schema:
   ha_url: str
-  ha_token: str?
+  ha_token: str

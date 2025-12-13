@@ -9,9 +9,9 @@ if [ -z "$HA_TOKEN" ]; then
     HA_TOKEN="${SUPERVISOR_TOKEN}"
 fi
 
-# Export environment variables for the Next.js app
-export NEXT_PUBLIC_HA_URL="${HA_URL}"
-export NEXT_PUBLIC_HA_TOKEN="${HA_TOKEN}"
+# Export environment variables for the Next.js API routes
+export HA_WEBSOCKET_URL="${HA_URL}"
+export HA_ACCESS_TOKEN="${HA_TOKEN}"
 
 bashio::log.info "Starting Light Controller..."
 bashio::log.info "Home Assistant URL: ${HA_URL}"

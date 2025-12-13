@@ -40,5 +40,11 @@ next-env.d.ts
 /data/*.db-shm
 /data/*.db-wal
 
+# Home Assistant add-on development
 samples/
+
+# IDE
+.vscode/
+.idea/
+
 CLAUDE.md

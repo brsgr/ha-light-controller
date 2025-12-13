@@ -9,18 +9,43 @@ import {
 } from "home-assistant-js-websocket";
 
 let connection: Connection | null = null;
+let configPromise: Promise<{ haUrl: string; haToken: string }> | null = null;
+
+async function getConfig(): Promise<{ haUrl: string; haToken: string }> {
+  if (!configPromise) {
+    configPromise = fetch("/api/config")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(
+            `Failed to fetch configuration: ${res.status} ${res.statusText}`,
+          );
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Config received:", {
+          haUrl: data.haUrl,
+          hasToken: !!data.haToken,
+        });
+        if (!data.haUrl || !data.haToken) {
+          throw new Error(
+            "[v2] Missing Home Assistant credentials. Please configure ha_url and ha_token in the add-on Configuration tab and restart the add-on.",
+          );
+        }
+        return data;
+      })
+      .catch((error) => {
+        console.error("Config fetch error:", error);
+        throw error;
+      });
+  }
+  return configPromise;
+}
 
 export async function getConnection(): Promise<Connection> {
   if (connection) return connection;
 
-  const haUrl = process.env.NEXT_PUBLIC_HA_URL;
-  const haToken = process.env.NEXT_PUBLIC_HA_TOKEN;
-
-  if (!haUrl || !haToken) {
-    throw new Error(
-      "Missing Home Assistant credentials. Please set NEXT_PUBLIC_HA_URL and NEXT_PUBLIC_HA_TOKEN in .env.local",
-    );
-  }
+  const { haUrl, haToken } = await getConfig();
 
   try {
     const auth = createLongLivedTokenAuth(haUrl, haToken);
